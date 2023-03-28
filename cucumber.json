@@ -4,12 +4,13 @@
             "snippetInterface": "async-await"
         },
         "paths": [
-            "src/test/features/addToCart.feature"
+            "src/test/features/"
         ],
         "publishQuiet": true,
         "dryRun": false,
         "require": [
-            "src/test/steps/*.ts"
+            "src/test/steps/*.ts",
+            "src/hooks/hooks.ts"
         ],
         "requireModule": [
             "ts-node/register"
