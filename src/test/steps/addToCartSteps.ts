@@ -5,7 +5,6 @@ import { chromium, Page, Browser, expect } from "@playwright/test";
 let browser: Browser;
 let page: Page;
 
-
 Given('User navigates to the application', async function () {
     browser = await chromium.launch({ headless: false });
     page = await browser.newPage();
@@ -23,20 +22,14 @@ Given('User enter the username as {string}', async function (username) {
 Given('User enter the password as {string}', async function (password) {
     await page.locator("input[formcontrolname='password']").type(password);
 })
-
-When('User click on the login button', async function () {
-    await page.locator("button[color='primary']").click();
+Given('user search for a {string}', async function (book) {
+    await page.locator("input[type='search']").type(book);
+    await page.locator("mat-option[role='option'] span").click();
 });
-
-
-Then('Login should be success', async function () {
-    const text = await page.locator("//button[contains(@class,'mat-focus-indicator mat-menu-trigger')]//span[1]").textContent();
-    console.log("Username: " + text);
-    await browser.close();
-})
-
-When('Login should fail', async function () {
-    const failureMesssage = page.locator("mat-error[role='alert']");
-    await expect(failureMesssage).toBeVisible();
-    await browser.close();
+When('user add the book to the cart', async function () {
+    await page.locator("//button[@color='primary']").click();
+});
+Then('the cart badge should get updated', async function () {
+    const badgeCount = await page.locator("#mat-badge-content-0").textContent();
+    expect(Number(badgeCount?.length)).toBeGreaterThan(0);
 });
