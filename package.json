@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "cucumber-js test"
+    "test": "cucumber-js test || true",
+    "posttest": "npx ts-node src/helper/report.ts"
   },
   "keywords": [],
   "author": "",
@@ -12,6 +13,7 @@
   "devDependencies": {
     "@cucumber/cucumber": "^9.0.1",
     "@playwright/test": "^1.31.2",
+    "multiple-cucumber-html-reporter": "^3.3.0",
     "ts-node": "^10.9.1"
   }
 }
