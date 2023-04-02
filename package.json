@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "pretest": "npx ts-node src/helper/init.ts",
-    "test": "cucumber-js test || true",
+    "test": "cross-env ENV=prod cucumber-js test || true",
     "posttest": "npx ts-node src/helper/report.ts",
     "test:failed": "cucumber-js -p rerun @rerun.txt"
   },
@@ -19,6 +19,8 @@
   "devDependencies": {
     "@cucumber/cucumber": "^9.0.1",
     "@playwright/test": "^1.31.2",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.0.3",
     "fs-extra": "^11.1.1",
     "multiple-cucumber-html-reporter": "^3.3.0",
     "ts-node": "^10.9.1"
