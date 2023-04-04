@@ -23,6 +23,7 @@
     "dotenv": "^16.0.3",
     "fs-extra": "^11.1.1",
     "multiple-cucumber-html-reporter": "^3.3.0",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "winston": "^3.8.2"
   }
 }
