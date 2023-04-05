@@ -23,5 +23,5 @@ jobs:
       if: always()
       with:
         name: Report
-        path: index.html
+        path: test-results
         retention-days: 2
