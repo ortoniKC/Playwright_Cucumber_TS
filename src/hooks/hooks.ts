@@ -36,16 +36,18 @@ After(async function ({ pickle, result }) {
     }
     await fixture.page.close();
     await context.close();
-    await this.attach(
-        img, "image/png"
-    );
-    await this.attach(
-        fs.readFileSync(videoPath),
-        'video/webm'
-    );
+    if (result?.status == Status.FAILED) {
+        await this.attach(
+            img, "image/png"
+        );
+        await this.attach(
+            fs.readFileSync(videoPath),
+            'video/webm'
+        );
+    }
+
 });
 
 AfterAll(async function () {
     await browser.close();
-    // fixture.logger.close();
 })
