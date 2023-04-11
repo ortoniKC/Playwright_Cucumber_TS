@@ -11,7 +11,7 @@ TypeScript is a powerful superset of JavaScript that adds optional static typing
 4. Rerun only failed features
 5. Retry failed tests on CI
 6. Github Actions integrated with downloadable report
-7. Page object model (WIP)
+7. Page object model
 
 ## Project structure
 
@@ -38,14 +38,14 @@ TypeScript is a powerful superset of JavaScript that adds optional static typing
 5. `npm test` to execute the tests
 
 ### Folder structure
-
+0. `src\pages` -> All the page (UI screen)
 1. `src\test\features` -> write your features here
 2. `src\test\steps` -> Your step definitions goes here
 3. `src\hooks\hooks.ts` -> Browser setup and teardown logic
 4. `src\hooks\pageFixture.ts` -> Simple way to share the page objects to steps
 5. `src\helper\env` -> Multiple environments are handled
 6. `src\helper\types` -> To get environment code suggesstions
-7. `src\helper\report.ts` -> To generate the report
+7. `src\helper\report` -> To generate the report
 8. `cucumber.json` -> One file to do all the magic
 9. `package.json` -> Contains all the dependencies
 ## Tutorials

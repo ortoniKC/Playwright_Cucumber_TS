@@ -4,7 +4,6 @@ Feature: User Authentication tests
     Given User navigates to the application
     And User click on the login link
 
-  @test
   Scenario: Login should be success
     And User enter the username as "ortoni11"
     And User enter the password as "Pass1234"
