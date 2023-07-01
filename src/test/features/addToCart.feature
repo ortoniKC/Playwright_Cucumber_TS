@@ -17,6 +17,7 @@ Feature: Add products to cart
       | ortoni   | pass1234$ | Roomies         |
       | ortonikc | pass1234  | The Simple Wild |
 
+  @fail
   Scenario: UnAuthenticated User - Add to cart
     When user search for a "All of Us with Wings"
     And user add the book to the cart
