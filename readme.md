@@ -26,6 +26,7 @@ TypeScript is a powerful superset of JavaScript that adds optional static typing
 3. [Logs](https://www.npmjs.com/package/winston)
 4. Screenshots of failure
 5. Test videos of failure
+6. Trace of failure
 
 ## Get Started
 
@@ -35,7 +36,14 @@ TypeScript is a powerful superset of JavaScript that adds optional static typing
 2. Extract and open in the VS-Code
 3. `npm i` to install the dependencies
 4. `npx playwright install` to install the browsers
-5. `npm test` to execute the tests
+5. `npm run test` to execute the tests
+6. To run a particular test change  
+```
+  paths: [
+            "src/test/features/featurename.feature"
+         ] 
+```
+7. Use tags to run a specific or collection of specs
 
 ### Folder structure
 0. `src\pages` -> All the page (UI screen)
@@ -46,11 +54,11 @@ TypeScript is a powerful superset of JavaScript that adds optional static typing
 5. `src\helper\env` -> Multiple environments are handled
 6. `src\helper\types` -> To get environment code suggesstions
 7. `src\helper\report` -> To generate the report
-8. `cucumber.json` -> One file to do all the magic
+8. `config/cucumber.js` -> One file to do all the magic
 9. `package.json` -> Contains all the dependencies
+10. `src\helper\auth` -> Storage state (Auth file)
+11. `src\helper\util` -> Read test data from json & logger
+
 ## Tutorials
 1. Learn Playwright - [Playwright - TS](https://youtube.com/playlist?list=PL699Xf-_ilW7EyC6lMuU4jelKemmS6KgD)
 2. BDD in detail - [TS binding](https://youtube.com/playlist?list=PL699Xf-_ilW6KgK-S1l9ynOnBGiZl2Bsk)
-
-
-[![VIDEO THUMBNAIL](IMAGE URL)](<iframe width="560" height="315" src="https://www.youtube.com/embed/bfWXNLqKlvA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>)

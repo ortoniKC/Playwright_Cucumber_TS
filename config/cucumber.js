@@ -5,7 +5,7 @@ module.exports = {
             snippetInterface: "async-await"
         },
         paths: [
-            "src/test/features/addToCartWithAuth.feature"
+            "src/test/features/"
         ],
         publishQuiet: true,
         dryRun: false,
