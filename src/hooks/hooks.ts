@@ -15,12 +15,18 @@ BeforeAll(async function () {
     browser = await invokeBrowser();
 });
 // It will trigger for not auth scenarios
-Before(async function ({ pickle }) {
+Before({ tags: "not @auth" }, async function ({ pickle }) {
     const scenarioName = pickle.name + pickle.id
     context = await browser.newContext({
         recordVideo: {
             dir: "test-results/videos",
         },
+    });
+    await context.tracing.start({
+        name: scenarioName,
+        title: pickle.name,
+        sources: true,
+        screenshots: true, snapshots: true
     });
     const page = await context.newPage();
     fixture.page = page;
@@ -29,13 +35,19 @@ Before(async function ({ pickle }) {
 
 
 // It will trigger for auth scenarios
-Before("@auth", async function ({ pickle }) {
+Before({ tags: '@auth' }, async function ({ pickle }) {
     const scenarioName = pickle.name + pickle.id
     context = await browser.newContext({
         storageState: getStorageState(pickle.name),
         recordVideo: {
             dir: "test-results/videos",
         },
+    });
+    await context.tracing.start({
+        name: scenarioName,
+        title: pickle.name,
+        sources: true,
+        screenshots: true, snapshots: true
     });
     const page = await context.newPage();
     fixture.page = page;
@@ -45,13 +57,16 @@ Before("@auth", async function ({ pickle }) {
 After(async function ({ pickle, result }) {
     let videoPath: string;
     let img: Buffer;
-    if (result?.status == Status.PASSED) {
-        img = await fixture.page.screenshot({ path: `./test-results/screenshots/${pickle.name}.png`, type: "png" })
+    if (result?.status == Status.FAILED) {
+        img = await fixture.page.screenshot(
+            { path: `./test-results/screenshots/${pickle.name}.png`, type: "png" })
         videoPath = await fixture.page.video().path();
     }
+    const path = `./test-results/trace/${pickle.id}.zip`;
+    await context.tracing.stop({ path: path });
     await fixture.page.close();
     await context.close();
-    if (result?.status == Status.PASSED) {
+    if (result?.status == Status.FAILED) {
         await this.attach(
             img, "image/png"
         );
@@ -59,6 +74,9 @@ After(async function ({ pickle, result }) {
             fs.readFileSync(videoPath),
             'video/webm'
         );
+        const traceFileLink = `<a href="https://trace.playwright.dev/?trace=blob&traceFileName=${encodeURIComponent(path)}">Open</a>`
+        await this.attach(`Trace file: ${traceFileLink}`, 'text/html');
+
     }
 
 });
@@ -73,3 +91,5 @@ function getStorageState(user: string): string | { cookies: { name: string; valu
     else if (user.endsWith("lead"))
         return "src/helper/auth/lead.json";
 }
+
+

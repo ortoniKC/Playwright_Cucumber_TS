@@ -14,6 +14,9 @@ Given('user search for a {string}', async function (book) {
 });
 When('user add the book to the cart', async function () {
     await fixture.page.locator("//button[@color='primary']").click();
+    const toast = fixture.page.locator("simple-snack-bar");
+    await expect(toast).toBeVisible();
+    await toast.waitFor({ state: "hidden" })
 });
 Then('the cart badge should get updated', async function () {
     const badgeCount = await fixture.page.locator("#mat-badge-content-0").textContent();

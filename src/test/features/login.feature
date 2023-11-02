@@ -1,6 +1,6 @@
 Feature: User Authentication tests
 
-  Background: 
+  Background:
     Given User navigates to the application
     And User click on the login link
 

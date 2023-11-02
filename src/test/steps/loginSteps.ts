@@ -31,9 +31,11 @@ When('User click on the login button', async function () {
 
 
 Then('Login should be success', async function () {
-    const text = await fixture.page.locator("//button[contains(@class,'mat-focus-indicator mat-menu-trigger')]//span[1]").textContent();
-    console.log("Username: " + text);
-    fixture.logger.info("Username: " + text);
+    const user = fixture.page.locator("//button[contains(@class,'mat-focus-indicator mat-menu-trigger')]//span[1]");
+    await expect(user).toBeVisible();
+    const userName = await user.textContent();
+    console.log("Username: " + userName);
+    fixture.logger.info("Username: " + userName);
 })
 
 When('Login should fail', async function () {

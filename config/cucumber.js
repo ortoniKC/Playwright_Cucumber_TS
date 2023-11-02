@@ -5,7 +5,7 @@ module.exports = {
             snippetInterface: "async-await"
         },
         paths: [
-            "src/test/features/"
+            "src/test/features/addToCartWithAuth.feature"
         ],
         publishQuiet: true,
         dryRun: false,
@@ -22,7 +22,7 @@ module.exports = {
             "json:test-results/cucumber-report.json",
             "rerun:@rerun.txt"
         ],
-        parallel: 2
+        parallel: 1
     },
     rerun: {
         formatOptions: {

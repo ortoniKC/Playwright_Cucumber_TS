@@ -4,6 +4,7 @@
   "description": "Playwright Cucumber TS framework - The easiest way to learn",
   "main": "index.js",
   "scripts": {
+    "debug": "cross-env ENV=prod PWDEBUG=1 DEBUG=pw:api cucumber-js --config=config/cucumber.js",
     "pretest": "npx ts-node src/helper/report/init.ts",
     "test": "cross-env ENV=prod FORCE_COLOR=0 cucumber-js --config=config/cucumber.js || true",
     "posttest": "npx ts-node src/helper/report/report.ts",
@@ -18,7 +19,7 @@
   "license": "ISC",
   "devDependencies": {
     "@cucumber/cucumber": "^9.0.1",
-    "@playwright/test": "^1.31.2",
+    "@playwright/test": "1.35.0",
     "cross-env": "^7.0.3",
     "dotenv": "^16.0.3",
     "fs-extra": "^11.1.1",
