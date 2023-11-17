@@ -48,6 +48,9 @@ TypeScript is a powerful superset of JavaScript that adds optional static typing
          ] 
 ```
 7. Use tags to run a specific or collection of specs
+```
+npm run test --TAGS="@test or @add"
+```
 
 ### Folder structure
 0. `src\pages` -> All the page (UI screen)

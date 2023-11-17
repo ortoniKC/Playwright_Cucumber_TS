@@ -57,16 +57,16 @@ Before({ tags: '@auth' }, async function ({ pickle }) {
 After(async function ({ pickle, result }) {
     let videoPath: string;
     let img: Buffer;
-    if (result?.status == Status.FAILED) {
+    const path = `./test-results/trace/${pickle.id}.zip`;
+    if (result?.status == Status.PASSED) {
         img = await fixture.page.screenshot(
             { path: `./test-results/screenshots/${pickle.name}.png`, type: "png" })
         videoPath = await fixture.page.video().path();
     }
-    const path = `./test-results/trace/${pickle.id}.zip`;
     await context.tracing.stop({ path: path });
     await fixture.page.close();
     await context.close();
-    if (result?.status == Status.FAILED) {
+    if (result?.status == Status.PASSED) {
         await this.attach(
             img, "image/png"
         );
@@ -74,7 +74,7 @@ After(async function ({ pickle, result }) {
             fs.readFileSync(videoPath),
             'video/webm'
         );
-        const traceFileLink = `<a href="https://trace.playwright.dev/?trace=blob&traceFileName=${encodeURIComponent(path)}">Open</a>`
+        const traceFileLink = `<a href="https://trace.playwright.dev/">Open ${path}</a>`
         await this.attach(`Trace file: ${traceFileLink}`, 'text/html');
 
     }
