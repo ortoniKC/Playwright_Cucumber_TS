@@ -1,0 +1,9 @@
+{
+  // vscode project-level settings for using the official Cucumber extension
+  "cucumber.features": [
+    "src/test/features/*.feature"
+  ],
+  "cucumber.glue": [
+    "src/test/steps/*.ts"
+  ]
+}
