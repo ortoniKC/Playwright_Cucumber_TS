@@ -1,4 +1,14 @@
-const report = require("multiple-cucumber-html-reporter");
+import * as report from 'multiple-cucumber-html-reporter';
+import * as os from 'os';
+import * as fs from 'fs-extra';
+import { browserDetailsPath } from '../browsers/browserManager';
+
+const browserDetails = fs.existsSync(browserDetailsPath)
+    ? fs.readJsonSync(browserDetailsPath)
+    : {
+        name: 'N/A',
+        version: 'N/A'
+    };
 
 report.generate({
     jsonDir: "test-results",
@@ -8,13 +18,13 @@ report.generate({
     displayDuration: false,
     metadata: {
         browser: {
-            name: "chrome",
-            version: "112",
+            name: browserDetails.name,
+            version: browserDetails.version,
         },
-        device: "Koushik - PC",
+        device: os.hostname(),
         platform: {
-            name: "Windows",
-            version: "10",
+            name: os.type(),
+            version: os.version(),
         },
     },
     customData: {
