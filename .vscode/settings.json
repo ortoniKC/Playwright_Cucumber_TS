@@ -1,9 +1,10 @@
 {
-  // vscode project-level settings for using the official Cucumber extension
+  // Configure project-level settings for the official Cucumber extension in Visual Studio Code.
+  // The settings now include subdirectories under 'features' and 'steps'
   "cucumber.features": [
-    "src/test/features/*.feature"
+    "src/test/features/**/*.feature"
   ],
   "cucumber.glue": [
-    "src/test/steps/*.ts"
+    "src/test/steps/**/*.ts"
   ]
 }
