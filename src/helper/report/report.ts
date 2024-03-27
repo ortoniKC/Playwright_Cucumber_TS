@@ -10,6 +10,19 @@ const browserDetails = fs.existsSync(browserDetailsPath)
         version: 'N/A'
     };
 
+
+// Converts platform name to report format to display proper OS logo
+function translatePlatformName(platform): string {
+    switch (platform) {
+        case 'darwin':
+            return 'osx';
+        case 'win32':
+            return 'windows';
+        default:
+            return platform;
+    }
+}
+
 report.generate({
     jsonDir: "test-results",
     reportPath: "test-results/reports/",
@@ -23,8 +36,8 @@ report.generate({
         },
         device: os.hostname(),
         platform: {
-            name: os.type(),
-            version: os.version(),
+            name: translatePlatformName(os.platform()),
+            version: os.version()
         },
     },
     customData: {
