@@ -22,7 +22,7 @@ function launchBrowser(browserType) {
 }
 
 export async function invokeBrowser() {
-    const browserType = process.env.npm_config_BROWSER || "chrome";
+    const browserType = process.env.npm_config_browser || "chrome";
     let browser = await launchBrowser(browserType)
     let browserDetails = {
         name: browserType,

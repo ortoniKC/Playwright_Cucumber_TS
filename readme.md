@@ -49,7 +49,11 @@ TypeScript is a powerful superset of JavaScript that adds optional static typing
 ```
 7. Use tags to run a specific or collection of specs
 ```
-npm run test --TAGS="@test or @add"
+npm run test --tags="@test or @add"
+```
+8. Run on a specific browser
+```
+npm run test --browser="firefox"
 ```
 
 ### Folder structure
