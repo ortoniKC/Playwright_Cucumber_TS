@@ -1,3 +1,4 @@
+import * as chalk from 'chalk';
 import * as express from 'express';
 import * as path from 'path';
 import * as fs from 'fs-extra';
@@ -33,8 +34,11 @@ app.get('/trace/:filename', (req, res, next) => {
     }
 });
 
-
 const port = process.env.REPORT_PORT
 app.listen(port, () => {
-    console.log(`View test report at: http://localhost:${port}/report/`);
+    console.log(chalk.green('====================================================================================='));
+    console.log('\t\t🚀 View test report at: ' + chalk.blue(`http://localhost:${port}/report/ 🚀`));
+    console.log(chalk.green('====================================================================================='));
+
+    console.log('\n' + 'Press CTRL+C to stop the server') + '\n';
 });

@@ -2,6 +2,7 @@ import * as report from 'multiple-cucumber-html-reporter';
 import * as os from 'os';
 import * as fs from 'fs-extra';
 import { browserDetailsPath } from '../browsers/browserManager';
+import * as chalk from 'chalk';
 
 const browserDetails = fs.existsSync(browserDetailsPath)
     ? fs.readJsonSync(browserDetailsPath)
@@ -9,7 +10,6 @@ const browserDetails = fs.existsSync(browserDetailsPath)
         name: 'N/A',
         version: 'N/A'
     };
-
 
 // Converts platform name to report format to display proper OS logo
 function translatePlatformName(platform): string {
@@ -49,3 +49,5 @@ report.generate({
         ],
     },
 });
+
+console.log('All tests have run. To view the report, run the following command: ' + chalk.red('npm run open:report') + '\n');

@@ -7,6 +7,7 @@ import { createLogger } from "winston";
 import { options } from "../helper/util/logger";
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import * as chalk from 'chalk';
 
 let browser: Browser;
 let context: BrowserContext;
