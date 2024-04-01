@@ -1,4 +1,4 @@
-@api
+@only @api
 Feature: Posts API
 
   Scenario: Retrieve all posts

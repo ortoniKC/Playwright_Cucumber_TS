@@ -8,7 +8,9 @@
     "pretest": "npx ts-node src/helper/report/init.ts",
     "test": "cross-env ENV=prod FORCE_COLOR=0 cucumber-js --config=config/cucumber.js || true",
     "posttest": "npx ts-node src/helper/report/report.ts",
-    "test:failed": "cucumber-js -p rerun @rerun.txt"
+    "test:failed": "cucumber-js -p rerun @rerun.txt",
+    "test:only": "npm run test --tags='@only'",
+    "test:ignore": "npm run test --tags='not @ignore'"
   },
   "keywords": [
     "cucumber",
@@ -21,8 +23,10 @@
     "@cucumber/cucumber": "^9.0.1",
     "@playwright/test": "1.35.0",
     "@types/fs-extra": "^11.0.4",
+    "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "dotenv": "^16.0.3",
+    "express": "^4.19.2",
     "fs-extra": "^11.1.1",
     "multiple-cucumber-html-reporter": "^3.3.0",
     "ts-node": "^10.9.1",
