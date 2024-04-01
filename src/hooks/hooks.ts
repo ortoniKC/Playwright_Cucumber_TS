@@ -57,7 +57,9 @@ Before({ tags: '@auth' }, async function ({ pickle }) {
 After(async function ({ pickle, result }) {
     let videoPath: string;
     let img: Buffer;
-    const path = `./test-results/trace/${pickle.id}.zip`;
+
+    const pickleName = pickle.name.split(' ').join('_'); // Replace spaces with underscores
+    const path = `./test-results/trace/${pickleName}_${pickle.id}.zip`;
 
     if (
         result?.status === Status.PASSED ||
@@ -65,7 +67,7 @@ After(async function ({ pickle, result }) {
         result?.status === Status.UNKNOWN
     ) {
         img = await fixture.page.screenshot(
-            { path: `./test-results/screenshots/${pickle.name}.png`, type: "png" }
+            { path: `./test-results/screenshots/${pickleName}_${pickle.id}.png`, type: "png" }
         );
         videoPath = await fixture.page.video().path();
     }
