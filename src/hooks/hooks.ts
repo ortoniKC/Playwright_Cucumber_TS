@@ -7,7 +7,6 @@ import { createLogger } from "winston";
 import { options } from "../helper/util/logger";
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import * as chalk from 'chalk';
 
 let browser: Browser;
 let context: BrowserContext;
@@ -16,9 +15,10 @@ BeforeAll(async function () {
     getEnv();
     browser = await invokeBrowser();
 });
+
 // It will trigger for not auth scenarios
 Before({ tags: "not @auth" }, async function ({ pickle }) {
-    const scenarioName = pickle.name + pickle.id
+    const scenarioName = formatScenarioName(pickle);
     context = await browser.newContext({
         recordVideo: {
             dir: "test-results/videos",
@@ -38,7 +38,7 @@ Before({ tags: "not @auth" }, async function ({ pickle }) {
 
 // It will trigger for auth scenarios
 Before({ tags: '@auth' }, async function ({ pickle }) {
-    const scenarioName = pickle.name + pickle.id
+    const scenarioName = formatScenarioName(pickle);
     context = await browser.newContext({
         storageState: getStorageState(pickle.name),
         recordVideo: {
@@ -57,11 +57,10 @@ Before({ tags: '@auth' }, async function ({ pickle }) {
 });
 
 After(async function ({ pickle, result }) {
+    const scenarioName = formatScenarioName(pickle);
     let videoPath: string;
     let img: Buffer;
 
-    const pickleName = pickle.name.split(' ').join('-'); // Replace spaces with dashes
-    const scenarioName = `${pickleName}_${pickle.id}`;
 
     if (
         result?.status === Status.PASSED ||
@@ -115,4 +114,7 @@ function getStorageState(user: string): string | { cookies: { name: string; valu
         return "src/helper/auth/lead.json";
 }
 
-
+function formatScenarioName(pickle) {
+    const pickleName = pickle.name.split(' ').join('-'); // Replace spaces with dashes
+    return `${pickleName}_${pickle.id}`;
+}
