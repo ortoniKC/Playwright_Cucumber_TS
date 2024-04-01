@@ -73,3 +73,42 @@ npm run test --browser="firefox"
 ## Tutorials
 1. Learn Playwright - [Playwright - TS](https://youtube.com/playlist?list=PL699Xf-_ilW7EyC6lMuU4jelKemmS6KgD)
 2. BDD in detail - [TS binding](https://youtube.com/playlist?list=PL699Xf-_ilW6KgK-S1l9ynOnBGiZl2Bsk)
+
+## Test Statuses and Reporting
+Initially, the code was set to capture screenshots, videos, and trace files only for scenarios with `result.status === 'PASSED'`. However, to provide more comprehensive reporting capabilities, the code has been updated to handle various Cucumber statuses and capture the appropriate test artifacts accordingly.
+
+### Cucumber Statuses
+Cucumber provides several statuses that indicate the outcome of a scenario or step during test execution. Here's a brief overview of each status:
+
+1. PASSED:
+  - Meaning: The scenario or step has executed successfully without any failures.
+  - Test Execution: The test runs to completion.
+2. FAILED:
+  - Meaning: The scenario or step has encountered a failure during execution. This could be due to an assertion failure, exception, or an explicit failure step.
+  - Test Execution: The test runs but encounters a failure.
+3. PENDING:
+  - Meaning: The scenario or step has a pending implementation. It indicates that the step definition for the corresponding step is missing or not yet implemented.
+  - Test Execution: The test does not run for the pending steps.
+4. SKIPPED:
+  - Meaning: The scenario or step has been skipped explicitly using tags or annotations. It is intentionally not executed.
+  Test Execution: The test does not run for the skipped scenarios or steps.
+5. UNDEFINED:
+  - Meaning: The scenario or step does not have a corresponding step definition. It indicates that the step implementation is missing.
+  - Test Execution: The test does not run for the undefined steps.
+6. AMBIGUOUS:
+  - Meaning: There are multiple step definitions that match a given step in a scenario. Cucumber cannot determine which step definition to execute.
+  - Test Execution: The test execution is halted when an ambiguous step is encountered.
+7. UNKNOWN:
+  - Meaning: This status is used when Cucumber encounters an unknown or unexpected situation during test execution.
+  - Test Execution: The behavior may vary depending on the specific circumstances that led to the UNKNOWN status.
+
+### Policy for capturing screenshots, videos, trace files
+Based on the Cucumber statuses, the following policy has been implemented for capturing screenshots, videos, and trace files:
+
+- PASSED and FAILED: Capture screenshots, videos, and trace files.
+- UNKNOWN: Capture screenshots, videos, and trace files to aid in investigating the unexpected situation.
+- PENDING and SKIPPED: Skip capturing screenshots, videos, and trace files.
+- UNDEFINED and AMBIGUOUS: Skip capturing screenshots and videos, but capture trace files for debugging purposes.
+
+
+Feel free to modify this behaviour in `hooks.ts` as per your project needs

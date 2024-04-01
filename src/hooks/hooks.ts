@@ -5,7 +5,7 @@ import { invokeBrowser } from "../helper/browsers/browserManager";
 import { getEnv } from "../helper/env/env";
 import { createLogger } from "winston";
 import { options } from "../helper/util/logger";
-const fs = require("fs-extra");
+import * as fs from 'fs-extra';
 
 let browser: Browser;
 let context: BrowserContext;
@@ -58,15 +58,27 @@ After(async function ({ pickle, result }) {
     let videoPath: string;
     let img: Buffer;
     const path = `./test-results/trace/${pickle.id}.zip`;
-    if (result?.status == Status.PASSED) {
+
+    if (
+        result?.status === Status.PASSED ||
+        result?.status === Status.FAILED ||
+        result?.status === Status.UNKNOWN
+    ) {
         img = await fixture.page.screenshot(
-            { path: `./test-results/screenshots/${pickle.name}.png`, type: "png" })
+            { path: `./test-results/screenshots/${pickle.name}.png`, type: "png" }
+        );
         videoPath = await fixture.page.video().path();
     }
+
     await context.tracing.stop({ path: path });
     await fixture.page.close();
     await context.close();
-    if (result?.status == Status.PASSED) {
+
+    if (
+        result?.status === Status.PASSED ||
+        result?.status === Status.FAILED ||
+        result?.status === Status.UNKNOWN
+    ) {
         await this.attach(
             img, "image/png"
         );
@@ -74,11 +86,15 @@ After(async function ({ pickle, result }) {
             fs.readFileSync(videoPath),
             'video/webm'
         );
-        const traceFileLink = `<a href="https://trace.playwright.dev/">Open ${path}</a>`
-        await this.attach(`Trace file: ${traceFileLink}`, 'text/html');
-
     }
 
+    if (
+        result?.status !== Status.PENDING &&
+        result?.status !== Status.SKIPPED
+    ) {
+        const traceFileLink = `<a href="https://trace.playwright.dev/">Open ${path}</a>`;
+        await this.attach(`Trace file: ${traceFileLink}`, 'text/html');
+    }
 });
 
 AfterAll(async function () {
