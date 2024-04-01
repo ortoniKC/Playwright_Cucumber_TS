@@ -6,6 +6,7 @@ import { getEnv } from "../helper/env/env";
 import { createLogger } from "winston";
 import { options } from "../helper/util/logger";
 import * as fs from 'fs-extra';
+import * as path from 'path';
 
 let browser: Browser;
 let context: BrowserContext;
@@ -58,8 +59,8 @@ After(async function ({ pickle, result }) {
     let videoPath: string;
     let img: Buffer;
 
-    const pickleName = pickle.name.split(' ').join('_'); // Replace spaces with underscores
-    const path = `./test-results/trace/${pickleName}_${pickle.id}.zip`;
+    const pickleName = pickle.name.split(' ').join('-'); // Replace spaces with dashes
+    const scenarioName = `${pickleName}_${pickle.id}`;
 
     if (
         result?.status === Status.PASSED ||
@@ -67,12 +68,13 @@ After(async function ({ pickle, result }) {
         result?.status === Status.UNKNOWN
     ) {
         img = await fixture.page.screenshot(
-            { path: `./test-results/screenshots/${pickleName}_${pickle.id}.png`, type: "png" }
+            { path: `./test-results/screenshots/${scenarioName}.png`, type: "png" }
         );
         videoPath = await fixture.page.video().path();
     }
 
-    await context.tracing.stop({ path: path });
+    const tracePath = path.join(__dirname, '..', '..', 'test-results', 'trace', `${scenarioName}.zip`);
+    await context.tracing.stop({ path: tracePath });
     await fixture.page.close();
     await context.close();
 
@@ -94,7 +96,9 @@ After(async function ({ pickle, result }) {
         result?.status !== Status.PENDING &&
         result?.status !== Status.SKIPPED
     ) {
-        const traceFileLink = `<a href="https://trace.playwright.dev/">Open ${path}</a>`;
+        const traceFileURL = `http://localhost:${process.env.REPORT_PORT}/trace/${scenarioName}.zip`;
+        const traceURL = `https://trace.playwright.dev/?trace=${traceFileURL}`;
+        const traceFileLink = `<a href="${traceURL}">Open /trace/${scenarioName}</a>`;
         await this.attach(`Trace file: ${traceFileLink}`, 'text/html');
     }
 });

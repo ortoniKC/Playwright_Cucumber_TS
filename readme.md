@@ -12,6 +12,7 @@ TypeScript is a powerful superset of JavaScript that adds optional static typing
 5. Retry failed tests on CI
 6. Github Actions integrated with downloadable report
 7. Page object model
+8. Open Playwright trace files directly from the hosted report
 
 ## Sample report
 ![image](https://github.com/ortoniKC/Playwright_Cucumber_TS/assets/58769833/da2d9f5a-85e7-4695-8ce2-3378b692afc4)
@@ -47,14 +48,14 @@ TypeScript is a powerful superset of JavaScript that adds optional static typing
             "src/test/features/featurename.feature"
          ] 
 ```
-7. Use tags to run a specific or collection of specs
-```
-npm run test --tags="@test or @add"
-```
-8. Run on a specific browser
-```
-npm run test --browser="firefox"
-```
+7. Use tags to run a specific or collection of specs: `npm run test --tags="@test or @add"`
+8. Run on a specific browser: `npm run test --browser="firefox"`
+9. To debug tests, use the `npm run debug` command. This will run tests in debug mode.
+10. After running tests, you can view a report using the `npm run open:report`
+11. If tests fail, you can rerun them using `npm run test:failed`
+12. To run only the tests tagged with `@only`, use the `npm run test:only`
+13. To run all tests except those tagged with `@ignore`, use the `npm run test:ignore`
+
 
 ### Folder structure
 0. `src\pages` -> All the page (UI screen)
