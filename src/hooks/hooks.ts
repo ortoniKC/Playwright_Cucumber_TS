@@ -144,10 +144,10 @@ class ArtifactManager {
     shouldAttachTrace: boolean;
     fx: FixtureManager;
 
-    constructor(scenario: ITestCaseHookParameter, fx: FixtureManager) {
+    constructor(fx: FixtureManager) {
         this.fx = fx;
         this.media = { img: null, videoPath: null };
-        let status = scenario.result?.status;
+        let status = fx.Scenario.result?.status;
         this.shouldAttachMedia =
             status === Status.PASSED ||
             status === Status.FAILED ||
@@ -183,7 +183,8 @@ class ArtifactManager {
 }
 
 After(async function (scenario) {
-    const art = new ArtifactManager(scenario, fx);
+    fx.Scenario = scenario;
+    const art = new ArtifactManager(fx);
 
     if (art.shouldAttachMedia) {
         await art.captureMedia();
