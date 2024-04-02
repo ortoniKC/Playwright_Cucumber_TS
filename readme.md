@@ -76,7 +76,9 @@ TypeScript is a powerful superset of JavaScript that adds optional static typing
 2. BDD in detail - [TS binding](https://youtube.com/playlist?list=PL699Xf-_ilW6KgK-S1l9ynOnBGiZl2Bsk)
 
 ## Test Statuses and Reporting
-Initially, the code was set to capture screenshots, videos, and trace files only for scenarios with `result.status === 'PASSED'`. However, to provide more comprehensive reporting capabilities, the code has been updated to handle various Cucumber statuses and capture the appropriate test artifacts accordingly.
+Initially, the code was set to capture screenshots, videos, and trace files only for scenarios with 
+`result.status === 'PASSED'`. 
+However, to provide more comprehensive reporting capabilities, the code has been updated to handle various Cucumber statuses and capture the appropriate test artifacts accordingly.
 
 ### Cucumber Statuses
 Cucumber provides several statuses that indicate the outcome of a scenario or step during test execution. Here's a brief overview of each status:
