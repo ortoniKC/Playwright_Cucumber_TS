@@ -4,6 +4,7 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as cors from 'cors';
 import { getEnv } from '../env/env';
+import * as opn from 'opn'
 
 getEnv();
 
@@ -41,4 +42,6 @@ app.listen(port, () => {
     console.log(chalk.green('====================================================================================='));
 
     console.log('\n' + 'Press CTRL+C to stop the server') + '\n';
+    
+    opn(`http://localhost:${port}/report/`);
 });
