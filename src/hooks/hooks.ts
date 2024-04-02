@@ -1,4 +1,4 @@
-import { BeforeAll, AfterAll, Before, After, Status } from "@cucumber/cucumber";
+import { BeforeAll, AfterAll, Before, After, Status, World, ITestCaseHookParameter } from "@cucumber/cucumber";
 import { Browser, BrowserContext } from "@playwright/test";
 import { fixture } from "./pageFixture";
 import { invokeBrowser } from "../helper/browsers/browserManager";
@@ -16,8 +16,9 @@ BeforeAll(async function () {
     browser = await invokeBrowser();
 });
 
-Before(async function ({ pickle }) {
-    const scenarioName = formatScenarioName(pickle);
+Before(async function (scenario) {
+    const { pickle } = scenario
+    const scenarioName = ArtifactManager.formatScenarioName(scenario);
     const hasAuth = pickle.tags.find((tag) => tag.name === '@auth');
 
     context = await browser.newContext({
@@ -67,44 +68,79 @@ Before(async function ({ pickle }) {
     }
 });
 
-After(async function ({ pickle, result }) {
-    const scenarioName = formatScenarioName(pickle);
-    const tracePath = path.join(__dirname, `../../test-results/trace/${scenarioName}.zip`);
+type Media = {
+    img: Buffer | null;
+    videoPath: string | null;
+};
 
-    let img: Buffer;
-    let videoPath: string;
+class ArtifactManager {
+    scenarioName: string;
+    media: Media;
+    shouldAttachMedia: boolean;
+    shouldAttachTrace: boolean;
 
-    const shouldCaptureMedia =
-        result?.status === Status.PASSED ||
-        result?.status === Status.FAILED ||
-        result?.status === Status.UNKNOWN;
-
-    if (shouldCaptureMedia) {
-        img = await fixture.page.screenshot({
-            path: `./test-results/screenshots/${scenarioName}.png`,
-            type: "png",
-        });
-        videoPath = await fixture.page.video().path();
+    static formatScenarioName(scenario: ITestCaseHookParameter) {
+        const pickleName = scenario.pickle.name.split(' ').join('-'); // Replace spaces with dashes
+        return `${pickleName}_${scenario.pickle.id}`;
     }
 
+    constructor(scenario: ITestCaseHookParameter) {
+        this.scenarioName = ArtifactManager.formatScenarioName(scenario);
+        this.media = { img: null, videoPath: null };
+        let status = scenario.result?.status;
+        this.shouldAttachMedia =
+            status === Status.PASSED ||
+            status === Status.FAILED ||
+            status === Status.UNKNOWN;
+        this.shouldAttachTrace =
+            status !== Status.PENDING &&
+            status !== Status.SKIPPED;
+    }
+
+    async captureMedia(): Promise<Media> {
+        let img = await fixture.page.screenshot({
+            path: `./test-results/screenshots/${this.scenarioName}.png`,
+            type: "png",
+        });
+        const videoPath = await fixture.page.video().path();
+        this.media = {
+            img: img,
+            videoPath: videoPath
+        }
+        return this.media;
+    }
+
+    async attachMedia(world: World) {
+        await world.attach(this.media.img, "image/png");
+        await world.attach(fs.readFileSync(this.media.videoPath), "video/webm");
+    }
+
+    async attachTrace(world: World) {
+        const traceFileURL = `http://localhost:${process.env.REPORT_PORT}/trace/${this.scenarioName}.zip`;
+        const traceURL = `https://trace.playwright.dev/?trace=${traceFileURL}`;
+        const traceLink = `<a href="${traceURL}">Open /trace/${this.scenarioName}</a>`;
+        await world.attach(`Trace file: ${traceLink}`, "text/html");
+    }
+}
+
+After(async function (scenario) {
+    const manager = new ArtifactManager(scenario);
+
+    if (manager.shouldAttachMedia) {
+        await manager.captureMedia();
+    }
+
+    const tracePath = path.join(__dirname, `../../test-results/trace/${this.scenarioName}.zip`);
     await context.tracing.stop({ path: tracePath });
     await fixture.page.close();
     await context.close();
 
-    if (shouldCaptureMedia) {
-        await this.attach(img, "image/png");
-        await this.attach(fs.readFileSync(videoPath), "video/webm");
+    if (manager.shouldAttachMedia) {
+        await manager.attachMedia(this);
     }
 
-    const shouldAttachTrace =
-        result?.status !== Status.PENDING &&
-        result?.status !== Status.SKIPPED;
-
-    if (shouldAttachTrace) {
-        const traceFileURL = `http://localhost:${process.env.REPORT_PORT}/trace/${scenarioName}.zip`;
-        const traceURL = `https://trace.playwright.dev/?trace=${traceFileURL}`;
-        const traceFileLink = `<a href="${traceURL}">Open /trace/${scenarioName}</a>`;
-        await this.attach(`Trace file: ${traceFileLink}`, "text/html");
+    if (manager.shouldAttachTrace) {
+        await manager.attachTrace(this);
     }
 });
 
@@ -112,7 +148,4 @@ AfterAll(async function () {
     await browser.close();
 })
 
-function formatScenarioName(pickle) {
-    const pickleName = pickle.name.split(' ').join('-'); // Replace spaces with dashes
-    return `${pickleName}_${pickle.id}`;
-}
+
