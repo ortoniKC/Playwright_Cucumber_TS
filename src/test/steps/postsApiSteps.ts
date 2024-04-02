@@ -1,6 +1,6 @@
 import { Before, Given, When, Then, setDefaultTimeout } from "@cucumber/cucumber";
 import { expect } from "@playwright/test";
-import { FixtureManager } from "../../hooks/hooks";
+import FixtureManager from "../../hooks/FixtureManager";
 setDefaultTimeout(60 * 1000 * 2)
 
 const BASE_URL = 'https://jsonplaceholder.typicode.com';

@@ -1,6 +1,6 @@
 import { Given, When, Then, setDefaultTimeout } from "@cucumber/cucumber";
 import { expect } from "@playwright/test";
-import { FixtureManager } from "../../hooks/hooks";
+import FixtureManager from "../../hooks/FixtureManager";
 setDefaultTimeout(60 * 1000 * 2)
 
 Given('User navigates to the application', async function () {

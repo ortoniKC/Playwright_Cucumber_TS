@@ -2,7 +2,7 @@ import { Given, When, Then } from "@cucumber/cucumber";
 import RegisterPage from "../../pages/registerPage";
 import Assert from "../../helper/wrapper/assert";
 import * as data from "../../helper/util/test-data/registerUser.json";
-import { FixtureManager } from "../../hooks/hooks";
+import FixtureManager from "../../hooks/FixtureManager";
 
 let registerPage: RegisterPage;
 let assert: Assert;
