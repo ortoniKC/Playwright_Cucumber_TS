@@ -114,4 +114,4 @@ Based on the Cucumber statuses, the following policy has been implemented for ca
 - UNDEFINED / AMBIGUOUS / has `@api` tag: Skip capturing screenshots and videos, but capture trace files for debugging purposes.
 
 
-Feel free to modify this behaviour in `hooks.ts` as per your project needs
+Feel free to modify this behaviour in `hooks.ts` / `ArtifactManager.ts` as per your project needs
