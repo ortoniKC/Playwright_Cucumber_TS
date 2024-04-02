@@ -21,7 +21,7 @@ Before(async function (this: PlaywrightWorld, scenario) {
     await fx.newPage();
     await fx.createLogger();
 
-    this.fixture = fx;
+    this.fixture = fx.Fixture;
 });
 
 After(async function (scenario) {

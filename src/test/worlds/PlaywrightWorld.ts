@@ -1,6 +1,6 @@
 import { World } from '@cucumber/cucumber';
-import FixtureManager from '../../hooks/FixtureManager';
+import { IFixture } from '../../hooks/FixtureManager';
 
 export default class PlaywrightWorld extends World {
-  fixture: FixtureManager;
+  fixture: IFixture;
 }
