@@ -13,11 +13,10 @@ app.use(cors({
     origin: 'https://trace.playwright.dev',
 }));
 
-const basePath = path.join(__dirname, '..', '..', '..', 'test-results');
-const traceFilesPath = path.join(basePath, 'trace');
-const reportFilesPath = path.join(basePath, 'reports');
+const traceDirPath = path.join(__dirname, '../../../test-results/trace');
+const reportDirPath = path.join(__dirname, '../../../test-results/reports');
 
-app.use('/report', express.static(reportFilesPath));
+app.use('/report', express.static(reportDirPath));
 
 app.get('/', (req, res) => {
     res.redirect('/report');
@@ -25,7 +24,7 @@ app.get('/', (req, res) => {
 
 // Custom middleware for downloading specific trace files
 app.get('/trace/:filename', (req, res, next) => {
-    const filePath = path.join(traceFilesPath, req.params.filename);
+    const filePath = path.join(traceDirPath, req.params.filename);
     if (fs.existsSync(filePath) && filePath.endsWith('.zip')) {
         res.setHeader('Content-Type', 'application/zip');
         res.setHeader('Content-Disposition', `attachment; filename=${req.params.filename}`);
@@ -42,6 +41,6 @@ app.listen(port, () => {
     console.log(chalk.green('====================================================================================='));
 
     console.log('\n' + 'Press CTRL+C to stop the server') + '\n';
-    
+
     opn(`http://localhost:${port}/report/`);
 });

@@ -1,5 +1,5 @@
 import { BeforeAll, AfterAll, Before, After, Status } from "@cucumber/cucumber";
-import { Browser, BrowserContext } from "@playwright/test";
+import { Browser, BrowserContext, BrowserContextOptions } from "@playwright/test";
 import { fixture } from "./pageFixture";
 import { invokeBrowser } from "../helper/browsers/browserManager";
 import { getEnv } from "../helper/env/env";
@@ -16,41 +16,26 @@ BeforeAll(async function () {
     browser = await invokeBrowser();
 });
 
-// It will trigger for not auth scenarios
-Before({ tags: "not @auth" }, async function ({ pickle }) {
+Before(async function ({ pickle }) {
     const scenarioName = formatScenarioName(pickle);
+    const hasAuth = pickle.tags.find((tag) => tag.name === '@auth');
+
     context = await browser.newContext({
         recordVideo: {
             dir: "test-results/videos",
         },
+        // Set storage state if the scenario has @auth tag
+        storageState: hasAuth ? getStorageState(pickle.name) : undefined,
     });
+
     await context.tracing.start({
         name: scenarioName,
         title: pickle.name,
         sources: true,
-        screenshots: true, snapshots: true
+        screenshots: true,
+        snapshots: true
     });
-    const page = await context.newPage();
-    fixture.page = page;
-    fixture.logger = createLogger(options(scenarioName));
-});
 
-
-// It will trigger for auth scenarios
-Before({ tags: '@auth' }, async function ({ pickle }) {
-    const scenarioName = formatScenarioName(pickle);
-    context = await browser.newContext({
-        storageState: getStorageState(pickle.name),
-        recordVideo: {
-            dir: "test-results/videos",
-        },
-    });
-    await context.tracing.start({
-        name: scenarioName,
-        title: pickle.name,
-        sources: true,
-        screenshots: true, snapshots: true
-    });
     const page = await context.newPage();
     fixture.page = page;
     fixture.logger = createLogger(options(scenarioName));
@@ -73,7 +58,7 @@ After(async function ({ pickle, result }) {
         videoPath = await fixture.page.video().path();
     }
 
-    const tracePath = path.join(__dirname, '..', '..', 'test-results', 'trace', `${scenarioName}.zip`);
+    const tracePath = path.join(__dirname, `../../test-results/trace/${scenarioName}.zip`);
     await context.tracing.stop({ path: tracePath });
     await fixture.page.close();
     await context.close();
