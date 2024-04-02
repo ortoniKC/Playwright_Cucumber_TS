@@ -37,7 +37,7 @@ report.generate({
         device: os.hostname(),
         platform: {
             name: translatePlatformName(os.platform()),
-            version: os.version()
+            version: os.release()
         },
     },
     customData: {
