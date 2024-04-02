@@ -1,13 +1,14 @@
 import { Given, When, Then } from "@cucumber/cucumber";
 import RegisterPage from "../../pages/registerPage";
-import { fixture } from "../../hooks/pageFixture";
 import Assert from "../../helper/wrapper/assert";
 import * as data from "../../helper/util/test-data/registerUser.json";
+import { FixtureManager } from "../../hooks/hooks";
 
 let registerPage: RegisterPage;
 let assert: Assert;
 
 Given('I navigate to the register page', async function () {
+    let fixture = this.fixture as FixtureManager
     registerPage = new RegisterPage(fixture.page);
     assert = new Assert(fixture.page);
     await registerPage.navigateToRegisterPage();

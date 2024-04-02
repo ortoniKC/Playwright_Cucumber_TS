@@ -1,11 +1,9 @@
 import { Before, Given, When, Then, setDefaultTimeout } from "@cucumber/cucumber";
-
 import { expect } from "@playwright/test";
-import { fixture } from "../../hooks/pageFixture";
+import { FixtureManager } from "../../hooks/hooks";
+setDefaultTimeout(60 * 1000 * 2)
 
 const BASE_URL = 'https://jsonplaceholder.typicode.com';
-
-setDefaultTimeout(60 * 1000 * 2)
 
 interface Post {
   id: number;
@@ -19,6 +17,7 @@ Before(function () {
 });
 
 When('I send a GET request to {string}', async function (endpoint) {
+  let fixture = this.fixture as FixtureManager
   const { request } = fixture.page
   const response = await request.get(BASE_URL + endpoint);
   this.response = await response.json()
@@ -26,6 +25,7 @@ When('I send a GET request to {string}', async function (endpoint) {
 });
 
 When('I send a POST request to {string} with the following data:', async function (endpoint, dataTable) {
+  let fixture = this.fixture as FixtureManager
   const { request } = fixture.page
   const data = dataTable.rowsHash();
   const response = await request.post(BASE_URL + endpoint, {
@@ -36,6 +36,7 @@ When('I send a POST request to {string} with the following data:', async functio
 });
 
 When('I send a PUT request to {string} with the following data:', async function (endpoint, dataTable) {
+  let fixture = this.fixture as FixtureManager
   const { request } = fixture.page
   const data = dataTable.rowsHash();
   const response = await request.put(BASE_URL + endpoint, {
@@ -46,6 +47,7 @@ When('I send a PUT request to {string} with the following data:', async function
 });
 
 When('I send a PATCH request to {string} with the following data:', async function (endpoint, dataTable) {
+  let fixture = this.fixture as FixtureManager
   const { request } = fixture.page
   const data = dataTable.rowsHash();
   const response = await request.patch(BASE_URL + endpoint, {
@@ -56,6 +58,7 @@ When('I send a PATCH request to {string} with the following data:', async functi
 });
 
 When('I send a DELETE request to {string}', async function (endpoint) {
+  let fixture = this.fixture as FixtureManager
   const { request } = fixture.page
   const response = await request.delete(BASE_URL + endpoint);
   this.statusCode = response.status();
