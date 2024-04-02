@@ -24,7 +24,7 @@ Before(async function (this: PlaywrightWorld, scenario) {
     this.fixture = fx.Fixture;
 });
 
-After(async function (scenario) {
+After(async function (this: PlaywrightWorld, scenario) {
     fx.Scenario = scenario;
     const art = new ArtifactManager(fx);
 
