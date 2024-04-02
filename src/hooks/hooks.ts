@@ -29,7 +29,7 @@ After(async function (scenario) {
     const art = new ArtifactManager(fx);
 
     if (art.shouldAttachMedia) {
-        await art.captureMedia();
+        await art.takeScreenshot();
     }
 
     await fx.stopTracing();

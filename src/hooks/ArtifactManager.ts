@@ -2,20 +2,15 @@ import { IWorld, Status } from "@cucumber/cucumber";
 import FixtureManager from "./FixtureManager";
 import * as fs from 'fs-extra';
 
-type Media = {
-    img: Buffer | null;
-    videoPath: string | null;
-};
-
 export default class ArtifactManager {
-    media: Media;
     shouldAttachMedia: boolean;
     shouldAttachTrace: boolean;
     fx: FixtureManager;
+    img: Buffer | null;
 
     constructor(fx: FixtureManager) {
         this.fx = fx;
-        this.media = { img: null, videoPath: null };
+        this.img = null
         let status = fx.Scenario.result?.status;
         this.shouldAttachMedia =
             status === Status.PASSED ||
@@ -26,21 +21,17 @@ export default class ArtifactManager {
             status !== Status.SKIPPED;
     }
 
-    async captureMedia(): Promise<void> {
-        let img = await this.fx.page.screenshot({
+    async takeScreenshot(): Promise<void> {
+        this.img = await this.fx.page.screenshot({
             path: `./test-results/screenshots/${this.fx.ScenarioName}.png`,
             type: "png",
         });
-        const videoPath = await this.fx.page.video().path();
-        this.media = {
-            img: img,
-            videoPath: videoPath
-        }
     }
 
     async attachMedia(world: IWorld) {
-        await world.attach(this.media.img, "image/png");
-        await world.attach(fs.readFileSync(this.media.videoPath), "video/webm");
+        await world.attach(this.img, "image/png");
+        const videoPath = await this.fx.page.video().path();
+        await world.attach(fs.createReadStream(videoPath), "video/webm");
     }
 
     async attachTrace(world: IWorld) {
