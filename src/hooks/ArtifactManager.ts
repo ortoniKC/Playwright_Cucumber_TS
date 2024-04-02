@@ -43,19 +43,21 @@ export default class ArtifactManager {
             return;
         }
 
-        let logContent = await fs.readFile(logFilePath, 'utf-8');
+        const logContent = await fs.readFile(logFilePath, 'utf-8');
         const logLines = logContent.split('\n');
+        const totalLines = logLines.length;
 
-        if (logLines.length <= 1) {
+        if (totalLines <= 1) {
             return;
         }
 
-        if (logLines.length > maxLines) {
-            const truncatedLines = logLines.slice(0, maxLines);
-            logContent = truncatedLines.join('\n') + '\n[Log truncated due to excessive length]';
-        }
+        const displayedLines = Math.min(totalLines, maxLines);
+        const truncatedMessage = totalLines > maxLines ? '\n[Log truncated due to excessive length]' : '';
+        const displayedLogContent = logLines.slice(0, displayedLines).join('\n');
 
-        await world.attach(logContent, 'text/plain');
+        const logInfo = `Logs (${displayedLines}/${totalLines} lines):\n${displayedLogContent}${truncatedMessage}`;
+
+        await world.attach(logInfo, 'text/plain');
     }
 
     async attachTrace(world: IWorld) {
