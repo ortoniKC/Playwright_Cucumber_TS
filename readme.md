@@ -108,8 +108,8 @@ Based on the Cucumber statuses, the following policy has been implemented for ca
 
 - PASSED and FAILED: Capture screenshots, videos, and trace files.
 - UNKNOWN: Capture screenshots, videos, and trace files to aid in investigating the unexpected situation.
-- PENDING and SKIPPED: Skip capturing screenshots, videos, and trace files.
-- UNDEFINED and AMBIGUOUS: Skip capturing screenshots and videos, but capture trace files for debugging purposes.
+- PENDING / SKIPPED: Skip capturing screenshots, videos, and trace files.
+- UNDEFINED / AMBIGUOUS / has `@api` tag: Skip capturing screenshots and videos, but capture trace files for debugging purposes.
 
 
 Feel free to modify this behaviour in `hooks.ts` as per your project needs
