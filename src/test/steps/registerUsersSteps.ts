@@ -1,8 +1,10 @@
-import { Given, When, Then } from "@cucumber/cucumber";
+import { Given, When, Then, setDefaultTimeout } from "@cucumber/cucumber";
 import RegisterPage from "../../pages/registerPage";
 import Assert from "../../helper/wrapper/assert";
 import * as data from "../../helper/util/test-data/registerUser.json";
 import { IFixture } from "../../hooks/FixtureManager";
+import * as ms from 'ms';
+setDefaultTimeout(ms('2 minutes'))
 
 let registerPage: RegisterPage;
 let assert: Assert;

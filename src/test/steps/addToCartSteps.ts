@@ -1,7 +1,8 @@
 import { Given, When, Then, setDefaultTimeout } from "@cucumber/cucumber";
 import { expect } from "@playwright/test";
 import { IFixture } from "../../hooks/FixtureManager";
-setDefaultTimeout(60 * 1000 * 2)
+import * as ms from 'ms';
+setDefaultTimeout(ms('2 minutes'))
 
 Given('user search for a {string}', async function (book) {
     let fixture = this.fixture as IFixture
