@@ -44,6 +44,8 @@ After(async function (scenario) {
         await art.attachTrace(this);
     }
 
+    await art.attachLogs(this);
+
     fx.Scenario = null;
 });
 

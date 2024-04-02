@@ -36,6 +36,28 @@ export default class ArtifactManager {
         await world.attach(fs.createReadStream(videoPath), "video/webm");
     }
 
+    async attachLogs(world: IWorld, maxLines: number = 100) {
+        const logFilePath = `test-results/logs/${this.fx.ScenarioName}/log.log`;
+
+        if (!await fs.pathExists(logFilePath)) {
+            return;
+        }
+
+        let logContent = await fs.readFile(logFilePath, 'utf-8');
+        const logLines = logContent.split('\n');
+
+        if (logLines.length <= 1) {
+            return;
+        }
+
+        if (logLines.length > maxLines) {
+            const truncatedLines = logLines.slice(0, maxLines);
+            logContent = truncatedLines.join('\n') + '\n[Log truncated due to excessive length]';
+        }
+
+        await world.attach(logContent, 'text/plain');
+    }
+
     async attachTrace(world: IWorld) {
         const traceFileURL = `http://localhost:${process.env.REPORT_PORT}/trace/${this.fx.ScenarioName}.zip`;
         const traceURL = `https://trace.playwright.dev/?trace=${traceFileURL}`;
