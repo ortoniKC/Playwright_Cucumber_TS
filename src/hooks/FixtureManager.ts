@@ -62,12 +62,10 @@ export default class FixtureManager implements IFixture {
         await this.browser.close();
     }
 
-    async openContext(hasAuth: boolean) {
+    async openContext() {
         this.context = await this.browser.newContext({
-            storageState: hasAuth ? getStorageState(this.ScenarioName) : undefined,
-            recordVideo: {
-                dir: "test-results/videos",
-            }
+            storageState: this.hasTag('@auth') ? getStorageState(this.ScenarioName) : undefined,
+            recordVideo: !this.hasTag('@api') ? { dir: "test-results/videos" } : undefined
         });
     }
 
@@ -102,8 +100,13 @@ export default class FixtureManager implements IFixture {
         await this.context.tracing.stop({ path: tracePath });
     }
 
+    private hasTag(tagName: string): boolean {
+        const { pickle } = this.Scenario;
+        return Boolean(pickle.tags.find((tag) => tag.name === tagName));
+    }
+
     private formatScenarioName() {
-        const { pickle } = this.scenario;
+        const { pickle } = this.Scenario;
         const pickleName = pickle.name.split(' ').join('-'); // Replace spaces with dashes
         return `${pickleName}_${pickle.id}`;
     }

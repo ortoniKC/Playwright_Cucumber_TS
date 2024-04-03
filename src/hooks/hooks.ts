@@ -15,8 +15,7 @@ BeforeAll(async function () {
 Before(async function (this: PlaywrightWorld, scenario) {
     fx.Scenario = scenario;
 
-    const hasAuth = Boolean(scenario.pickle.tags.find((tag) => tag.name === '@auth'));
-    await fx.openContext(hasAuth);
+    await fx.openContext();
     await fx.startTracing();
     await fx.newPage();
     await fx.createLogger();
