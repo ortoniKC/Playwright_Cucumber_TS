@@ -37,7 +37,7 @@ After(async function (this: PlaywrightWorld, scenario) {
     if (art.shouldAttachTrace) await art.attachTrace();
     await art.attachLogs();
 
-    fx.setScenario(null);
+    fx.clearScenario();
 });
 
 AfterAll(async function () {

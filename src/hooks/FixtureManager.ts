@@ -23,8 +23,12 @@ export default class FixtureManager implements IFixture {
 
     constructor() { }
 
-    setScenario(s: ITestCaseHookParameter | null) {
-        s === null ? this.scenario = null : this.scenario = new ScenarioManager(s);
+    setScenario(s: ITestCaseHookParameter) {
+        this.scenario = new ScenarioManager(s);
+    }
+
+    clearScenario() {
+        this.scenario = null;
     }
 
     /**
