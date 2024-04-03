@@ -13,7 +13,7 @@ BeforeAll(async function () {
 });
 
 Before(async function (this: PlaywrightWorld, scenario) {
-    fx.Scenario = scenario;
+    fx.setScenario(scenario);
 
     await fx.openContext();
     await fx.startTracing();
@@ -24,28 +24,20 @@ Before(async function (this: PlaywrightWorld, scenario) {
 });
 
 After(async function (this: PlaywrightWorld, scenario) {
-    fx.Scenario = scenario;
-    const art = new ArtifactManager(fx);
+    fx.setScenario(scenario);
+    const art = new ArtifactManager(this, fx);
 
-    if (art.shouldAttachMedia) {
-        await art.takeScreenshot();
-    }
+    if (art.shouldAttachMedia) await art.takeScreenshot();
 
     await fx.stopTracing();
     await fx.closePage();
     await fx.closeContext();
 
-    if (art.shouldAttachMedia) {
-        await art.attachMedia(this);
-    }
+    if (art.shouldAttachMedia) await art.attachMedia();
+    if (art.shouldAttachTrace) await art.attachTrace();
+    await art.attachLogs();
 
-    if (art.shouldAttachTrace) {
-        await art.attachTrace(this);
-    }
-
-    await art.attachLogs(this);
-
-    fx.Scenario = null;
+    fx.setScenario(null);
 });
 
 AfterAll(async function () {

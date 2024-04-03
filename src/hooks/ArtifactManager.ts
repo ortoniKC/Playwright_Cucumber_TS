@@ -8,13 +8,13 @@ export default class ArtifactManager {
     fx: FixtureManager;
     img: Buffer | null;
 
-    constructor(fx: FixtureManager) {
+    constructor(private world: IWorld, fx: FixtureManager) {
         this.fx = fx;
         this.img = null
-        let status = fx.Scenario.result?.status;
+        let status = fx.scenario.Status;
 
         this.shouldAttachMedia =
-            !fx.hasTag('@api') &&
+            !fx.scenario.hasTag('@api') &&
             status === Status.PASSED ||
             status === Status.FAILED ||
             status === Status.UNKNOWN;
@@ -25,19 +25,19 @@ export default class ArtifactManager {
 
     async takeScreenshot(): Promise<void> {
         this.img = await this.fx.page.screenshot({
-            path: `./test-results/screenshots/${this.fx.ScenarioName}.png`,
+            path: `./test-results/screenshots/${this.fx.scenario.DashedName}.png`,
             type: "png",
         });
     }
 
-    async attachMedia(world: IWorld) {
-        await world.attach(this.img, "image/png");
+    async attachMedia() {
+        await this.world.attach(this.img, "image/png");
         const videoPath = await this.fx.page.video().path();
-        await world.attach(fs.createReadStream(videoPath), "video/webm");
+        await this.world.attach(fs.createReadStream(videoPath), "video/webm");
     }
 
-    async attachLogs(world: IWorld, maxLines: number = 100) {
-        const logFilePath = `test-results/logs/${this.fx.ScenarioName}/log.log`;
+    async attachLogs(maxLines: number = 100) {
+        const logFilePath = `test-results/logs/${this.fx.scenario.DashedName}/log.log`;
 
         if (!await fs.pathExists(logFilePath)) {
             return;
@@ -57,13 +57,13 @@ export default class ArtifactManager {
 
         const logInfo = `Logs (${displayedLines}/${totalLines} lines):\n${displayedLogContent}${truncatedMessage}`;
 
-        await world.attach(logInfo, 'text/plain');
+        await this.world.attach(logInfo, 'text/plain');
     }
 
-    async attachTrace(world: IWorld) {
-        const traceFileURL = `http://localhost:${process.env.REPORT_PORT}/trace/${this.fx.ScenarioName}.zip`;
+    async attachTrace() {
+        const traceFileURL = `http://localhost:${process.env.REPORT_PORT}/trace/${this.fx.scenario.DashedName}.zip`;
         const traceURL = `https://trace.playwright.dev/?trace=${traceFileURL}`;
-        const traceLink = `<a href="${traceURL}">Open /trace/${this.fx.ScenarioName}</a>`;
-        await world.attach(`Trace file: ${traceLink}`, "text/html");
+        const traceLink = `<a href="${traceURL}">Open /trace/${this.fx.scenario.DashedName}</a>`;
+        await this.world.attach(`Trace file: ${traceLink}`, "text/html");
     }
 }

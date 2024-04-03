@@ -3,6 +3,7 @@ import { Logger, createLogger } from "winston";
 import { options } from "../helper/util/logger";
 import { Browser, BrowserContext, Page } from "@playwright/test";
 import { invokeBrowser } from "../helper/browsers/browserManager";
+import ScenarioManager from './ScenarioManager';
 import { ITestCaseHookParameter } from '@cucumber/cucumber';
 
 export interface IFixture {
@@ -10,8 +11,7 @@ export interface IFixture {
     context: BrowserContext;
     page: Page;
     logger: Logger;
-    scenario: ITestCaseHookParameter;
-    hasTag: (tagName: string) => boolean;
+    scenario: ScenarioManager;
 }
 
 export default class FixtureManager implements IFixture {
@@ -19,9 +19,13 @@ export default class FixtureManager implements IFixture {
     context: BrowserContext;
     page: Page;
     logger: Logger;
-    scenario: ITestCaseHookParameter;
+    scenario: ScenarioManager;
 
     constructor() { }
+
+    setScenario(s: ITestCaseHookParameter | null) {
+        s === null ? this.scenario = null : this.scenario = new ScenarioManager(s);
+    }
 
     /**
      * Provides access to the current test fixture.
@@ -40,20 +44,7 @@ export default class FixtureManager implements IFixture {
             page: this.page,
             logger: this.logger,
             scenario: this.scenario,
-            hasTag: this.hasTag.bind(this)
         }
-    }
-
-    set Scenario(scenario: ITestCaseHookParameter) {
-        this.scenario = scenario;
-    }
-
-    get Scenario() {
-        return this.scenario;
-    }
-
-    get ScenarioName() {
-        return this.formatScenarioName();
     }
 
     async openBrowser() {
@@ -66,8 +57,8 @@ export default class FixtureManager implements IFixture {
 
     async openContext() {
         this.context = await this.browser.newContext({
-            storageState: this.hasTag('@auth') ? getStorageState(this.ScenarioName) : undefined,
-            recordVideo: !this.hasTag('@api') ? { dir: "test-results/videos" } : undefined
+            storageState: this.scenario.hasTag('@auth') ? getStorageState(this.scenario.DashedName) : undefined,
+            recordVideo: this.scenario.hasTag('@api') ? undefined : { dir: "test-results/videos" }
         });
     }
 
@@ -76,7 +67,7 @@ export default class FixtureManager implements IFixture {
     }
 
     async createLogger() {
-        this.logger = createLogger(options(this.ScenarioName));
+        this.logger = createLogger(options(this.scenario.DashedName));
     }
 
     async closePage() {
@@ -89,8 +80,8 @@ export default class FixtureManager implements IFixture {
 
     async startTracing() {
         await this.context.tracing.start({
-            name: this.ScenarioName,
-            title: this.scenario.pickle.name,
+            name: this.scenario.DashedName,
+            title: this.scenario.Title,
             sources: true,
             screenshots: true,
             snapshots: true
@@ -98,19 +89,8 @@ export default class FixtureManager implements IFixture {
     }
 
     async stopTracing() {
-        const tracePath = path.join(__dirname, `../../test-results/trace/${this.ScenarioName}.zip`);
+        const tracePath = path.join(__dirname, `../../test-results/trace/${this.scenario.DashedName}.zip`);
         await this.context.tracing.stop({ path: tracePath });
-    }
-
-    hasTag(tagName: string) {
-        const { pickle } = this.Scenario;
-        return pickle.tags.some((tag) => tag.name === tagName);
-    }
-
-    private formatScenarioName() {
-        const { pickle } = this.Scenario;
-        const pickleName = pickle.name.split(' ').join('-'); // Replace spaces with dashes
-        return `${pickleName}_${pickle.id}`;
     }
 }
 
