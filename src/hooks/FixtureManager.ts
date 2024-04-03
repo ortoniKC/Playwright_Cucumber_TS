@@ -23,14 +23,6 @@ export default class FixtureManager implements IFixture {
 
     constructor() { }
 
-    setScenario(s: ITestCaseHookParameter) {
-        this.scenario = new ScenarioManager(s);
-    }
-
-    clearScenario() {
-        this.scenario = null;
-    }
-
     /**
      * Provides access to the current test fixture.
      * 
@@ -49,6 +41,14 @@ export default class FixtureManager implements IFixture {
             logger: this.logger,
             scenario: this.scenario,
         }
+    }
+
+    setScenario(s: ITestCaseHookParameter) {
+        this.scenario = new ScenarioManager(s);
+    }
+
+    clearScenario() {
+        this.scenario = null;
     }
 
     async openBrowser() {
