@@ -5,11 +5,9 @@ import * as fs from 'fs-extra';
 export default class ArtifactManager {
     shouldAttachMedia: boolean;
     shouldAttachTrace: boolean;
-    fx: FixtureManager;
     img: Buffer | null;
 
-    constructor(private world: IWorld, fx: FixtureManager) {
-        this.fx = fx;
+    constructor(private world: IWorld, private fx: FixtureManager) {
         this.img = null
         let status = fx.scenario.Status;
 

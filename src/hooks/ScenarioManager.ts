@@ -1,11 +1,8 @@
 import { ITestCaseHookParameter } from "@cucumber/cucumber";
 
 export default class ScenarioManager {
-    cucumberScenario: ITestCaseHookParameter;
 
-    constructor(scenario: ITestCaseHookParameter) {
-        this.cucumberScenario = scenario;
-    }
+    constructor(private cucumberScenario: ITestCaseHookParameter) { }
 
     get DashedName() {
         return this.formatScenarioName();
