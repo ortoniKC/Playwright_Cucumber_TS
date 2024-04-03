@@ -5,12 +5,13 @@ module.exports = {
             snippetInterface: "async-await"
         },
         paths: [
-            "src/test/features/"
+            "src/test/features/**/*"
         ],
         publishQuiet: true,
         dryRun: false,
+        // retry: 2,
         require: [
-            "src/test/steps/*.ts",
+            "src/test/steps/**/*.ts",
             "src/hooks/hooks.ts"
         ],
         requireModule: [
@@ -22,7 +23,7 @@ module.exports = {
             "json:test-results/cucumber-report.json",
             "rerun:@rerun.txt"
         ],
-        parallel: 4
+        parallel: 8
     },
     rerun: {
         formatOptions: {

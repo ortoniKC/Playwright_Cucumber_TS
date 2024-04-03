@@ -5,7 +5,7 @@ export const browserDetailsPath = 'browser-details.json';
 
 
 const options: LaunchOptions = {
-    headless: !true
+    headless: true
 }
 
 function launchBrowser(browserType) {

@@ -5,10 +5,12 @@ import { Browser, BrowserContext, Page } from "@playwright/test";
 import { invokeBrowser } from "../helper/browsers/browserManager";
 import ScenarioManager from './ScenarioManager';
 import { ITestCaseHookParameter } from '@cucumber/cucumber';
+import PageManager from './PageManager';
 
 export interface IFixture {
     browser: Browser;
     context: BrowserContext;
+    pageManager: PageManager;
     page: Page;
     logger: Logger;
     scenario: ScenarioManager;
@@ -17,11 +19,14 @@ export interface IFixture {
 export default class FixtureManager implements IFixture {
     browser: Browser;
     context: BrowserContext;
+    pageManager: PageManager;
     page: Page;
     logger: Logger;
     scenario: ScenarioManager;
 
-    constructor() { }
+    constructor() {
+        this.pageManager = new PageManager();
+    }
 
     /**
      * Provides access to the current test fixture.
@@ -37,7 +42,8 @@ export default class FixtureManager implements IFixture {
         return {
             browser: this.browser,
             context: this.context,
-            page: this.page,
+            pageManager: this.pageManager,
+            page: this.pageManager.Page,
             logger: this.logger,
             scenario: this.scenario,
         }
@@ -67,15 +73,15 @@ export default class FixtureManager implements IFixture {
     }
 
     async newPage() {
-        this.page = await this.context.newPage();
+        await this.pageManager.newPage(this.context);
+    }
+
+    async closeAllPages() {
+        await this.pageManager.closeAllPages();
     }
 
     async createLogger() {
         this.logger = createLogger(options(this.scenario.DashedName));
-    }
-
-    async closePage() {
-        await this.page.close();
     }
 
     async closeContext() {

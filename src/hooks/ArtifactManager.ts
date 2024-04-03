@@ -22,16 +22,25 @@ export default class ArtifactManager {
     }
 
     async takeScreenshot(): Promise<void> {
-        this.img = await this.fx.page.screenshot({
-            path: `./test-results/screenshots/${this.fx.scenario.DashedName}.png`,
-            type: "png",
-        });
+        const currentPage = this.fx.pageManager.Page;
+        if (currentPage) {
+            this.img = await currentPage.screenshot({
+                path: `./test-results/screenshots/${this.fx.scenario.DashedName}.png`,
+                type: "png",
+            });
+        }
     }
 
     async attachMedia() {
-        await this.world.attach(this.img, "image/png");
-        const videoPath = await this.fx.page.video().path();
-        await this.world.attach(fs.createReadStream(videoPath), "video/webm");
+        if (this.img) {
+            await this.world.attach(this.img, "image/png");
+        }
+
+        const currentPage = this.fx.pageManager.Page;
+        if (currentPage) {
+            const videoPath = await currentPage.video().path();
+            await this.world.attach(fs.createReadStream(videoPath), "video/webm");
+        }
     }
 
     async attachLogs(maxLines: number = 100) {

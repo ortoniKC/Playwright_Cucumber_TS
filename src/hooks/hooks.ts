@@ -17,7 +17,9 @@ Before(async function (this: PlaywrightWorld, scenario) {
 
     await fx.openContext();
     await fx.startTracing();
-    await fx.newPage();
+    if (!fx.scenario.hasTag("@pageless")) {
+        await fx.newPage();
+    }
     await fx.createLogger();
 
     this.fixture = fx.Fixture;
@@ -30,7 +32,7 @@ After(async function (this: PlaywrightWorld, scenario) {
     if (art.shouldAttachMedia) await art.takeScreenshot();
 
     await fx.stopTracing();
-    await fx.closePage();
+    await fx.closeAllPages();
     await fx.closeContext();
 
     if (art.shouldAttachMedia) await art.attachMedia();
