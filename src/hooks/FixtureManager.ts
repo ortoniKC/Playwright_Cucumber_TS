@@ -11,6 +11,7 @@ export interface IFixture {
     page: Page;
     logger: Logger;
     scenario: ITestCaseHookParameter;
+    hasTag: (tagName: string) => boolean;
 }
 
 export default class FixtureManager implements IFixture {
@@ -38,7 +39,8 @@ export default class FixtureManager implements IFixture {
             context: this.context,
             page: this.page,
             logger: this.logger,
-            scenario: this.scenario
+            scenario: this.scenario,
+            hasTag: this.hasTag.bind(this)
         }
     }
 
@@ -100,9 +102,9 @@ export default class FixtureManager implements IFixture {
         await this.context.tracing.stop({ path: tracePath });
     }
 
-    private hasTag(tagName: string): boolean {
+    hasTag(tagName: string): boolean {
         const { pickle } = this.Scenario;
-        return Boolean(pickle.tags.find((tag) => tag.name === tagName));
+        return pickle.tags.some((tag) => tag.name === tagName);
     }
 
     private formatScenarioName() {

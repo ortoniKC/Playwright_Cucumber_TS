@@ -12,9 +12,9 @@ export default class ArtifactManager {
         this.fx = fx;
         this.img = null
         let status = fx.Scenario.result?.status;
-        const scenarioHasApiTag = fx.Scenario.pickle.tags.some(tag => tag.name === '@api');
+
         this.shouldAttachMedia =
-            !scenarioHasApiTag &&
+            !fx.hasTag('@api') &&
             status === Status.PASSED ||
             status === Status.FAILED ||
             status === Status.UNKNOWN;
