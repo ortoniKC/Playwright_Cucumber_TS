@@ -102,7 +102,7 @@ export default class FixtureManager implements IFixture {
         await this.context.tracing.stop({ path: tracePath });
     }
 
-    hasTag(tagName: string): boolean {
+    hasTag(tagName: string) {
         const { pickle } = this.Scenario;
         return pickle.tags.some((tag) => tag.name === tagName);
     }
