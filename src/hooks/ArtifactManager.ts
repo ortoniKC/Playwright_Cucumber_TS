@@ -26,7 +26,7 @@ export default class ArtifactManager {
         const { scenario, pageManager } = this.fx
         const currentPage = pageManager.Page;
 
-        if (scenario.hasTag('@disable:screenshots')) return;
+        if (scenario.hasTag('@disable:screenshot')) return;
         if (!currentPage) return;
         this.img = await currentPage.screenshot({
             path: `./test-results/screenshots/${this.fx.scenario.DashedName}.png`,
@@ -38,7 +38,7 @@ export default class ArtifactManager {
     async attachMedia() {
         const { scenario } = this.fx
 
-        if (!scenario.hasTag('@disable:screenshots') && this.img) {
+        if (!scenario.hasTag('@disable:screenshot') && this.img) {
             await this.world.attach(this.img, "image/png");
         }
         if (!scenario.hasTag('@disable:video') && this.videoPath) {

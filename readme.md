@@ -120,7 +120,7 @@ Feel free to modify this behaviour in `hooks.ts` / `ArtifactManager.ts` as per y
 
 You can disable screenshots, video recording, logging, and tracing on a per-test basis using the following tags:
 
-- `@disable:screenshots`: Disables screenshot capturing for the tagged test.
+- `@disable:screenshot`: Disables screenshot capturing for the tagged test.
 - `@disable:video`: Disables video recording for the tagged test.
 - `@disable:logs`: Disables logging for the tagged test.
 - `@disable:trace`: Disables tracing for the tagged test.
