@@ -7,12 +7,14 @@ setDefaultTimeout(ms('2 minutes'))
 Given('User navigates to the application', async function () {
     let fixture = this.fixture as IFixture
     await fixture.page.goto(process.env.BASEURL);
-    fixture.logger.info("Navigated to the application")
+    fixture.logger.info("Navigated to the application");
+    await fixture.page.waitForTimeout(ms('2 seconds'));
+    await fixture.page.waitForLoadState();
 })
 
 Given('User click on the login link', async function () {
     let fixture = this.fixture as IFixture
-    await fixture.page.locator("//span[text()='Login']").click();
+    await fixture.page.locator('mat-toolbar-row').getByRole('button', { name: 'Login' }).click()
 });
 
 Given('User enter the username as {string}', async function (username) {
@@ -27,15 +29,15 @@ Given('User enter the password as {string}', async function (password) {
 
 When('User click on the login button', async function () {
     let fixture = this.fixture as IFixture
-    await fixture.page.locator("button[color='primary']").click();
+    await fixture.page.locator('mat-card-actions').getByRole('button', { name: 'Login' }).click()
     await fixture.page.waitForLoadState();
     fixture.logger.info("Waiting for 2 seconds")
-    await fixture.page.waitForTimeout(2000);
+    await fixture.page.waitForTimeout(ms('2 seconds'));
 });
 
 Then('Login should be success', async function () {
     let fixture = this.fixture as IFixture
-    const user = fixture.page.locator("//button[contains(@class,'mat-focus-indicator mat-menu-trigger')]//span[1]");
+    const user = await fixture.page.locator('a.mat-mdc-menu-trigger span.mdc-button__label > span');
     await expect(user).toBeVisible();
     const userName = await user.textContent();
     console.log("Username: " + userName);

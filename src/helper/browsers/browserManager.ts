@@ -5,7 +5,7 @@ export const browserDetailsPath = 'browser-details.json';
 
 
 const options: LaunchOptions = {
-    headless: true
+    headless: !true
 }
 
 function launchBrowser(browserType) {
@@ -29,7 +29,6 @@ export async function invokeBrowser() {
         version: browser.version()
     }
 
-    console.log('Browser:', browserDetails.name, 'Version:', browserDetails.version)
     await fs.writeJson(browserDetailsPath, browserDetails);
     return browser
 }
