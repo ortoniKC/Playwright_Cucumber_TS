@@ -122,7 +122,7 @@ You can disable screenshots, video recording, logging, and tracing on a per-test
 
 - `@disable:screenshot`: Disables screenshot capturing for the tagged test.
 - `@disable:video`: Disables video recording for the tagged test.
-- `@disable:logs`: Disables logging for the tagged test.
+- `@disable:log`: Disables logging for the tagged test.
 - `@disable:trace`: Disables tracing for the tagged test.
 
 To use these tags, simply add them to your feature / scenario in your `.feature` file.

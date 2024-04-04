@@ -50,7 +50,7 @@ export default class ArtifactManager {
         const { scenario } = this.fx
         const logFilePath = `test-results/logs/${this.fx.scenario.DashedName}/log.log`;
 
-        if (scenario.hasTag('@disable:logs')) return;
+        if (scenario.hasTag('@disable:log')) return;
         if (!await fs.pathExists(logFilePath)) return;
         const logContent = await fs.readFile(logFilePath, 'utf-8');
         const logLines = logContent.split('\n');
