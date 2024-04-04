@@ -6,11 +6,13 @@ export default class ArtifactManager {
     shouldAttachMedia: boolean;
     shouldAttachTrace: boolean;
     img: Buffer | null;
+    videoPath: string | null;
 
     constructor(private world: IWorld, private fx: FixtureManager) {
-        this.img = null
+        this.img = null;
+        this.videoPath = null;
+        
         let status = fx.scenario.Status;
-
         this.shouldAttachMedia =
             !fx.scenario.hasTag('@api') &&
             status === Status.PASSED ||
@@ -23,41 +25,29 @@ export default class ArtifactManager {
 
     async takeScreenshot(): Promise<void> {
         const currentPage = this.fx.pageManager.Page;
-        if (currentPage) {
-            this.img = await currentPage.screenshot({
-                path: `./test-results/screenshots/${this.fx.scenario.DashedName}.png`,
-                type: "png",
-            });
-        }
+
+        if (!currentPage) return;
+        this.img = await currentPage.screenshot({
+            path: `./test-results/screenshots/${this.fx.scenario.DashedName}.png`,
+            type: "png",
+        });
+        this.videoPath = await currentPage.video().path();
     }
 
     async attachMedia() {
-        if (this.img) {
-            await this.world.attach(this.img, "image/png");
-        }
-
-        const currentPage = this.fx.pageManager.Page;
-        if (currentPage) {
-            const videoPath = await currentPage.video().path();
-            await this.world.attach(fs.createReadStream(videoPath), "video/webm");
-        }
+        if (this.img) await this.world.attach(this.img, "image/png");
+        await this.world.attach(fs.createReadStream(this.videoPath), "video/webm");
     }
 
     async attachLogs(maxLines: number = 100) {
         const logFilePath = `test-results/logs/${this.fx.scenario.DashedName}/log.log`;
 
-        if (!await fs.pathExists(logFilePath)) {
-            return;
-        }
-
+        if (!await fs.pathExists(logFilePath)) return;
         const logContent = await fs.readFile(logFilePath, 'utf-8');
         const logLines = logContent.split('\n');
         const totalLines = logLines.length;
 
-        if (totalLines <= 1) {
-            return;
-        }
-
+        if (totalLines <= 1) return;
         const displayedLines = Math.min(totalLines, maxLines);
         const truncatedMessage = totalLines > maxLines ? '\n[Log truncated due to excessive length]' : '';
         const displayedLogContent = logLines.slice(0, displayedLines).join('\n');
