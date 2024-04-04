@@ -112,7 +112,17 @@ Based on the Cucumber statuses, the following policy has been implemented for ca
 - __PASSED__ and __FAILED__: Capture screenshots, videos, and trace files.
 - __UNKNOWN__: Capture screenshots, videos, and trace files to aid in investigating the unexpected situation.
 - __PENDING__ or __SKIPPED__: Skip capturing screenshots, videos, and trace files.
-- __UNDEFINED__ or __AMBIGUOUS__ or has *`@api`* tag: Skip capturing screenshots and videos, but capture trace files for debugging purposes.
-
+- __UNDEFINED__ or __AMBIGUOUS__: Skip capturing screenshots and videos, but capture trace files for debugging purposes.
 
 Feel free to modify this behaviour in `hooks.ts` / `ArtifactManager.ts` as per your project needs
+
+### Disabling Screenshots, Video, Logging, and Tracing
+
+You can disable screenshots, video recording, logging, and tracing on a per-test basis using the following tags:
+
+- `@disable:screenshots`: Disables screenshot capturing for the tagged test.
+- `@disable:video`: Disables video recording for the tagged test.
+- `@disable:logs`: Disables logging for the tagged test.
+- `@disable:trace`: Disables tracing for the tagged test.
+
+To use these tags, simply add them to your feature / scenario in your `.feature` file.

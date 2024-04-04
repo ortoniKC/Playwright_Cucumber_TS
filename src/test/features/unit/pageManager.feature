@@ -1,4 +1,4 @@
-@unit @pageless @only
+@disable:video @unit @pageless @only
 Feature: PageManager
 
   Background: 

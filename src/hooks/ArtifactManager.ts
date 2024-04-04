@@ -11,37 +11,46 @@ export default class ArtifactManager {
     constructor(private world: IWorld, private fx: FixtureManager) {
         this.img = null;
         this.videoPath = null;
-        
-        let status = fx.scenario.Status;
+
+        const { scenario } = this.fx
         this.shouldAttachMedia =
-            !fx.scenario.hasTag('@api') &&
-            status === Status.PASSED ||
-            status === Status.FAILED ||
-            status === Status.UNKNOWN;
+            scenario.Status === Status.PASSED ||
+            scenario.Status === Status.FAILED ||
+            scenario.Status === Status.UNKNOWN;
         this.shouldAttachTrace =
-            status !== Status.PENDING &&
-            status !== Status.SKIPPED;
+            scenario.Status !== Status.PENDING &&
+            scenario.Status !== Status.SKIPPED;
     }
 
     async takeScreenshot(): Promise<void> {
-        const currentPage = this.fx.pageManager.Page;
+        const { scenario, pageManager } = this.fx
+        const currentPage = pageManager.Page;
 
+        if (scenario.hasTag('@disable:screenshots')) return;
         if (!currentPage) return;
         this.img = await currentPage.screenshot({
             path: `./test-results/screenshots/${this.fx.scenario.DashedName}.png`,
             type: "png",
         });
-        this.videoPath = await currentPage.video().path();
+        this.videoPath = await currentPage.video()?.path();
     }
 
     async attachMedia() {
-        if (this.img) await this.world.attach(this.img, "image/png");
-        await this.world.attach(fs.createReadStream(this.videoPath), "video/webm");
+        const { scenario } = this.fx
+
+        if (!scenario.hasTag('@disable:screenshots') && this.img) {
+            await this.world.attach(this.img, "image/png");
+        }
+        if (!scenario.hasTag('@disable:video') && this.videoPath) {
+            await this.world.attach(fs.createReadStream(this.videoPath), "video/webm");
+        }
     }
 
     async attachLogs(maxLines: number = 100) {
+        const { scenario } = this.fx
         const logFilePath = `test-results/logs/${this.fx.scenario.DashedName}/log.log`;
 
+        if (scenario.hasTag('@disable:logs')) return;
         if (!await fs.pathExists(logFilePath)) return;
         const logContent = await fs.readFile(logFilePath, 'utf-8');
         const logLines = logContent.split('\n');
@@ -58,6 +67,9 @@ export default class ArtifactManager {
     }
 
     async attachTrace() {
+        const { scenario } = this.fx
+        if (scenario.hasTag('@disable:trace')) return;
+
         const traceFileURL = `http://localhost:${process.env.REPORT_PORT}/trace/${this.fx.scenario.DashedName}.zip`;
         const traceURL = `https://trace.playwright.dev/?trace=${traceFileURL}`;
         const traceLink = `<a href="${traceURL}">Open /trace/${this.fx.scenario.DashedName}</a>`;

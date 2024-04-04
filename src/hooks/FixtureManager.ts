@@ -68,7 +68,7 @@ export default class FixtureManager implements IFixture {
     async openContext() {
         this.context = await this.browser.newContext({
             storageState: this.scenario.hasTag('@auth') ? getStorageState(this.scenario.DashedName) : undefined,
-            recordVideo: this.scenario.hasTag('@api') ? undefined : { dir: "test-results/videos" }
+            recordVideo: this.scenario.hasTag('@disable:video') ? undefined : { dir: "test-results/videos" }
         });
     }
 
@@ -89,6 +89,7 @@ export default class FixtureManager implements IFixture {
     }
 
     async startTracing() {
+        if (this.scenario.hasTag('@disable:trace')) return;
         await this.context.tracing.start({
             name: this.scenario.DashedName,
             title: this.scenario.Title,
@@ -99,6 +100,7 @@ export default class FixtureManager implements IFixture {
     }
 
     async stopTracing() {
+        if (this.scenario.hasTag('@disable:trace')) return;
         const tracePath = path.join(__dirname, `../../test-results/trace/${this.scenario.DashedName}.zip`);
         await this.context.tracing.stop({ path: tracePath });
     }
