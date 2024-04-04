@@ -11,7 +11,7 @@
     "test:failed": "cross-env ENV=prod cucumber-js -p rerun --config=config/cucumber.js @rerun.txt",
     "test:only": "npm run test --tags='@only'",
     "test:ignore": "npm run test --tags='not @ignore'",
-    "open:report": "cross-env ENV=prod npx ts-node src/helper/report/report-server.ts"
+    "open:report": "npx ts-node src/helper/report/report-server.ts"
   },
   "keywords": [
     "cucumber",
