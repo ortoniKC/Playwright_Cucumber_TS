@@ -24,13 +24,11 @@ const commonConfig = {
     ],
 };
 
-const { paths, ...commonConfigWithoutPaths } = commonConfig;
-
 module.exports = {
     default: {
         ...commonConfig,
         tags: tags,
-        parallel: 12,
+        parallel: 2,
     },
     debug: {
         ...commonConfig,
@@ -38,7 +36,8 @@ module.exports = {
         parallel: 1,
     },
     rerun: {
-        ...commonConfigWithoutPaths,
-        parallel: 1
+        ...commonConfig,
+        paths: [],
+        parallel: 2
     }
 }
