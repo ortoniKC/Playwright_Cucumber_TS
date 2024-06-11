@@ -10,4 +10,5 @@ export const getEnv = () => {
         console.error("NO ENV PASSED!")
     }
 
+    process.env.REPORT_PORT = process.env.REPORT_PORT || '3000';
 }

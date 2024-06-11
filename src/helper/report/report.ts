@@ -1,4 +1,27 @@
-const report = require("multiple-cucumber-html-reporter");
+import * as report from 'multiple-cucumber-html-reporter';
+import * as os from 'os';
+import * as fs from 'fs-extra';
+import { browserDetailsPath } from '../browsers/browserManager';
+import * as chalk from 'chalk';
+
+const browserDetails = fs.existsSync(browserDetailsPath)
+    ? fs.readJsonSync(browserDetailsPath)
+    : {
+        name: 'N/A',
+        version: 'N/A'
+    };
+
+// Converts platform name to report format to display proper OS logo
+function translatePlatformName(platform): string {
+    switch (platform) {
+        case 'darwin':
+            return 'osx';
+        case 'win32':
+            return 'windows';
+        default:
+            return platform;
+    }
+}
 
 report.generate({
     jsonDir: "test-results",
@@ -8,13 +31,13 @@ report.generate({
     displayDuration: false,
     metadata: {
         browser: {
-            name: "chrome",
-            version: "112",
+            name: browserDetails.name,
+            version: browserDetails.version,
         },
-        device: "Koushik - PC",
+        device: os.hostname(),
         platform: {
-            name: "Windows",
-            version: "10",
+            name: translatePlatformName(os.platform()),
+            version: os.release()
         },
     },
     customData: {
@@ -26,3 +49,5 @@ report.generate({
         ],
     },
 });
+
+console.log('All tests have run. To view the report, run the following command: ' + chalk.red('npm run open:report') + '\n');

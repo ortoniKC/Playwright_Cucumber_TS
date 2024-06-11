@@ -12,6 +12,8 @@ TypeScript is a powerful superset of JavaScript that adds optional static typing
 5. Retry failed tests on CI
 6. Github Actions integrated with downloadable report
 7. Page object model
+8. Open Playwright trace files directly from the hosted report
+9. Multiple tab support - see `PageManager` class.
 
 ## Sample report
 ![image](https://github.com/ortoniKC/Playwright_Cucumber_TS/assets/58769833/da2d9f5a-85e7-4695-8ce2-3378b692afc4)
@@ -47,10 +49,14 @@ TypeScript is a powerful superset of JavaScript that adds optional static typing
             "src/test/features/featurename.feature"
          ] 
 ```
-7. Use tags to run a specific or collection of specs
-```
-npm run test --TAGS="@test or @add"
-```
+7. Use tags to run a specific or collection of specs: `npm run test --tags="@test or @add"`
+8. Run on a specific browser: `npm run test --browser="firefox"`
+9. To debug tests, use the `npm run debug` command. This will run tests in debug mode.
+10. After running tests, you can view a report using the `npm run open:report`
+11. If tests fail, you can rerun them using `npm run test:failed`
+12. To run only the tests tagged with `@only`, use the `npm run test:only`
+13. To run all tests except those tagged with `@ignore`, use the `npm run test:ignore`
+
 
 ### Folder structure
 0. `src\pages` -> All the page (UI screen)
@@ -69,3 +75,54 @@ npm run test --TAGS="@test or @add"
 ## Tutorials
 1. Learn Playwright - [Playwright - TS](https://youtube.com/playlist?list=PL699Xf-_ilW7EyC6lMuU4jelKemmS6KgD)
 2. BDD in detail - [TS binding](https://youtube.com/playlist?list=PL699Xf-_ilW6KgK-S1l9ynOnBGiZl2Bsk)
+
+## Test Statuses and Reporting
+Initially, the code was set to capture screenshots, videos, and trace files only for scenarios with 
+`result.status === 'PASSED'`. 
+However, to provide more comprehensive reporting capabilities, the code has been updated to handle various Cucumber statuses and capture the appropriate test artifacts accordingly.
+
+### Cucumber Statuses
+Cucumber provides several statuses that indicate the outcome of a scenario or step during test execution. Here's a brief overview of each status:
+
+1. __PASSED__:
+  - __*Meaning*__: The scenario or step has executed successfully without any failures.
+  - __*Test Execution*__: The test runs to completion.
+2. __FAILED__:
+  - __*Meaning*__: The scenario or step has encountered a failure during execution. This could be due to an assertion failure, exception, or an explicit failure step.
+  - __*Test Execution*__: The test runs but encounters a failure.
+3. __PENDING__:
+  - __*Meaning*__: The scenario or step has a pending implementation. It indicates that the step definition for the corresponding step is missing or not yet implemented.
+  - __*Test Execution*__: The test does not run for the pending steps.
+4. __SKIPPED__:
+  - __*Meaning*__: The scenario or step has been skipped explicitly using tags or annotations. It is intentionally not executed.
+  __*Test Execution*__: The test does not run for the skipped scenarios or steps.
+5. __UNDEFINED__:
+  - __*Meaning*__: The scenario or step does not have a corresponding step definition. It indicates that the step implementation is missing.
+  - __*Test Execution*__: The test does not run for the undefined steps.
+6. __AMBIGUOUS__:
+  - __*Meaning*__: There are multiple step definitions that match a given step in a scenario. Cucumber cannot determine which step definition to execute.
+  - __*Test Execution*__: The test execution is halted when an ambiguous step is encountered.
+7. __UNKNOWN__:
+  - __*Meaning*__: This status is used when Cucumber encounters an unknown or unexpected situation during test execution.
+  - __*Test Execution*__: The behavior may vary depending on the specific circumstances that led to the UNKNOWN status.
+
+### Policy for capturing screenshots, videos, trace files
+Based on the Cucumber statuses, the following policy has been implemented for capturing screenshots, videos, and trace files:
+
+- __PASSED__ and __FAILED__: Capture screenshots, videos, and trace files.
+- __UNKNOWN__: Capture screenshots, videos, and trace files to aid in investigating the unexpected situation.
+- __PENDING__ or __SKIPPED__: Skip capturing screenshots, videos, and trace files.
+- __UNDEFINED__ or __AMBIGUOUS__: Skip capturing screenshots and videos, but capture trace files for debugging purposes.
+
+Feel free to modify this behaviour in `hooks.ts` / `ArtifactManager.ts` as per your project needs
+
+### Disabling Screenshots, Video, Logging, and Tracing
+
+You can disable screenshots, video recording, logging, and tracing on a per-test basis using the following tags:
+
+- `@disable:screenshot`: Disables screenshot capturing for the tagged test.
+- `@disable:video`: Disables video recording for the tagged test.
+- `@disable:log`: Disables logging for the tagged test.
+- `@disable:trace`: Disables tracing for the tagged test.
+
+To use these tags, simply add them to your feature / scenario in your `.feature` file.

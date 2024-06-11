@@ -4,11 +4,14 @@
   "description": "Playwright Cucumber TS framework - The easiest way to learn",
   "main": "index.js",
   "scripts": {
-    "debug": "cross-env ENV=prod PWDEBUG=1 DEBUG=pw:api cucumber-js --config=config/cucumber.js",
+    "debug": "cross-env ENV=prod PWDEBUG=1 DEBUG=pw:api cucumber-js -p debug --config=config/cucumber.js",
     "pretest": "npx ts-node src/helper/report/init.ts",
     "test": "cross-env ENV=prod FORCE_COLOR=0 cucumber-js --config=config/cucumber.js || true",
     "posttest": "npx ts-node src/helper/report/report.ts",
-    "test:failed": "cucumber-js -p rerun @rerun.txt"
+    "test:failed": "cross-env ENV=prod cucumber-js -p rerun --config=config/cucumber.js @rerun.txt",
+    "test:only": "npm run test --tags='@only'",
+    "test:ignore": "npm run test --tags='not @ignore'",
+    "open:report": "npx ts-node src/helper/report/report-server.ts"
   },
   "keywords": [
     "cucumber",
@@ -20,10 +23,16 @@
   "devDependencies": {
     "@cucumber/cucumber": "^9.0.1",
     "@playwright/test": "1.35.0",
+    "@types/fs-extra": "^11.0.4",
+    "chalk": "^4.1.2",
+    "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "dotenv": "^16.0.3",
+    "express": "^4.19.2",
     "fs-extra": "^11.1.1",
+    "ms": "^2.1.3",
     "multiple-cucumber-html-reporter": "^3.3.0",
+    "opn": "^6.0.0",
     "ts-node": "^10.9.1",
     "winston": "^3.8.2"
   }
